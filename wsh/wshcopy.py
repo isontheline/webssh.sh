@@ -20,5 +20,6 @@ def cli():
 
     print("\033]52;c;" + base64_string + "\a", end='\r')
 
+
 if __name__ == "__main__":
     cli()
