@@ -1,9 +1,14 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
-    name='wsh',
-    version='0.1.0',
-    description='WebSSH Tools Library',
+    name='webssh-sh',
+    version='22.11.1',
+    description='Shell Helpers about WebSSH',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/isontheline/webssh.sh',
     author='Arnaud MENGUS',
     license='MIT',
