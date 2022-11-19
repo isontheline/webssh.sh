@@ -9,7 +9,10 @@ setup(
     license='MIT',
     packages=['wsh'],
     install_requires=[],
-    scripts=['wsh/bin/wshcopy'],
+    scripts=[],
+    entry_points={
+        'console_scripts': ['wshcopy=wsh.wshcopy:cli'],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
