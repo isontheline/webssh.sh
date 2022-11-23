@@ -32,27 +32,30 @@ def cli():
 
     input_content = input_content.rstrip()
 
-    print_sequence_start()
-    print_sequence(input_content)
-    print_sequence_end()
+    write_sequence_start()
+    write_sequence(input_content)
+    write_sequence_end()
 
 
-def print_sequence(input_content):
+def write_sequence(input_content):
     input_content_bytes = input_content.encode("utf-8")
     base64_bytes = base64.b64encode(input_content_bytes)
     base64_string = base64_bytes.decode("utf-8")
-    print("\033]52;c;" + base64_string + "\a", end='')
+    write_stdout("\033]52;c;" + base64_string + "\a")
 
 
-def print_sequence_start():
+def write_sequence_start():
     if is_tmux():
-        print("\033Ptmux;\033", end='')
+        write_stdout("\033Ptmux;\033")
 
 
-def print_sequence_end():
+def write_sequence_end():
     if is_tmux():
-        print("\033\\", end='')
+        write_stdout("\033\\")
 
+def write_stdout(content):
+    sys.stdout.write(content)
+    sys.stdout.flush()
 
 def is_tmux():
     if terminal == "tmux":
