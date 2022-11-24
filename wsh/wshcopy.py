@@ -13,10 +13,13 @@ import os
 import sys
 import base64
 import argparse
+import pkg_resources
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--terminal",
                     help="Force terminal type instead of auto detection", default="auto")
+parser.add_argument("-v", "--version",
+                    help="Show version of wshcopy", action="store_true")
 args = parser.parse_args()
 
 terminal = args.terminal
@@ -53,9 +56,11 @@ def write_sequence_end():
     if is_tmux():
         write_stdout("\033\\")
 
+
 def write_stdout(content):
     sys.stdout.write(content)
     sys.stdout.flush()
+
 
 def is_tmux():
     if terminal == "tmux":
@@ -78,4 +83,11 @@ def is_screen():
 
 
 if __name__ == "__main__":
+    # If "version" arg is set, print version and exit :
+    if args.version:
+        version = pkg_resources.require("webssh-sh")[0].version
+        print("webssh-sh %s" % version)
+        exit(0)
+
+    # Launch the cli :
     cli()
