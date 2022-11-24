@@ -26,6 +26,12 @@ terminal = args.terminal
 
 
 def cli():
+    # If "version" arg is set, print version and exit :
+    if args.version:
+        version = pkg_resources.require("webssh-sh")[0].version
+        print("webssh-sh %s" % version)
+        exit(0)
+
     input_content = ""
 
     for line in sys.stdin:
@@ -83,11 +89,5 @@ def is_screen():
 
 
 if __name__ == "__main__":
-    # If "version" arg is set, print version and exit :
-    if args.version:
-        version = pkg_resources.require("webssh-sh")[0].version
-        print("webssh-sh %s" % version)
-        exit(0)
-
     # Launch the cli :
     cli()
