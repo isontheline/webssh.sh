@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='webssh-sh',
-    version='22.11.7',
+    version='22.11.8',
     description='Shell Helpers about WebSSH',
     long_description=long_description,
     long_description_content_type="text/markdown",

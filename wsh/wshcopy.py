@@ -59,11 +59,11 @@ def write_osc52_sequence(input_content):
         """
         => https://github.com/aymanbagabas/go-osc52/blob/64534a3e8e1c38973b62289e51553bafaf52d60c/osc52.go#L181
         Screen doesn't support OSC52 but will pass the contents of a DCS sequence to
-		the outer terminal unchanged.
+                the outer terminal unchanged.
 
-		Here, we split the encoded string into 76 bytes chunks and then join the
-		chunks with <end-dsc><start-dsc> sequences. Finally, wrap the whole thing in
-		<start-dsc><start-osc52><joined-chunks><end-osc52><end-dsc>.
+                Here, we split the encoded string into 76 bytes chunks and then join the
+                chunks with <end-dsc><start-dsc> sequences. Finally, wrap the whole thing in
+                <start-dsc><start-osc52><joined-chunks><end-osc52><end-dsc>.
         """
         s = [base64_string[i:i+76] for i in range(0, len(base64_string), 76)]
         write_stdout("\x1b\\\x1bP".join(s))
@@ -77,11 +77,11 @@ def write_osc52_sequence_start():
         write_stdout("\x1bPtmux;\x1b")
     if is_screen():
         write_stdout("\x1bP")
-    write_stdout("\x1b]52;c;") # OSC52 Sequence Start
+    write_stdout("\x1b]52;c;")  # OSC52 Sequence Start
 
 
 def write_osc52_sequence_end():
-    write_stdout("\x07") # OSC52 Sequence End
+    write_stdout("\x07")  # OSC52 Sequence End
     if is_tmux():
         write_stdout("\x1b\\")
     if is_screen():
@@ -108,7 +108,8 @@ def is_screen():
         return True
     if terminal != "auto":
         return False
-    if 'TERM' in os.environ and os.environ['TERM'] == "screen":
+    if 'TERM' in os.environ and os.environ['TERM'] == "screen" \
+            and 'TMUX' not in os.environ:
         return True
     return False
 
