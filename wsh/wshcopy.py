@@ -31,20 +31,14 @@ def cli():
         version = pkg_resources.require("webssh-sh")[0].version
         print("webssh-sh %s" % version)
         exit(0)
-
     input_content = read_stdin()
-
     if input_content == "":
         exit(0)
-
-    write_sequence_start()
-    write_sequence(input_content)
-    write_sequence_end()
+    write_osc52_sequence(input_content)
 
 
 def read_stdin():
     input_content = ""
-
     try:
         for line in sys.stdin:
             if '\D' == line.rstrip():
@@ -53,25 +47,45 @@ def read_stdin():
         input_content = input_content.rstrip()
     except KeyboardInterrupt:
         input_content = ""
-    
     return input_content
 
 
-def write_sequence(input_content):
+def write_osc52_sequence(input_content):
+    write_osc52_sequence_start()
     input_content_bytes = input_content.encode("utf-8")
     base64_bytes = base64.b64encode(input_content_bytes)
     base64_string = base64_bytes.decode("utf-8")
-    write_stdout("\033]52;c;" + base64_string + "\a")
+    if is_screen():
+        """
+        => https://github.com/aymanbagabas/go-osc52/blob/64534a3e8e1c38973b62289e51553bafaf52d60c/osc52.go#L181
+        Screen doesn't support OSC52 but will pass the contents of a DCS sequence to
+		the outer terminal unchanged.
+
+		Here, we split the encoded string into 76 bytes chunks and then join the
+		chunks with <end-dsc><start-dsc> sequences. Finally, wrap the whole thing in
+		<start-dsc><start-osc52><joined-chunks><end-osc52><end-dsc>.
+        """
+        s = [base64_string[i:i+76] for i in range(0, len(base64_string), 76)]
+        write_stdout("\x1b\\\x1bP".join(s))
+    else:
+        write_stdout(base64_string)
+    write_osc52_sequence_end()
 
 
-def write_sequence_start():
+def write_osc52_sequence_start():
     if is_tmux():
-        write_stdout("\033Ptmux;\033")
+        write_stdout("\x1bPtmux;\x1b")
+    if is_screen():
+        write_stdout("\x1bP")
+    write_stdout("\x1b]52;c;") # OSC52 Sequence Start
 
 
-def write_sequence_end():
+def write_osc52_sequence_end():
+    write_stdout("\x07") # OSC52 Sequence End
     if is_tmux():
-        write_stdout("\033\\")
+        write_stdout("\x1b\\")
+    if is_screen():
+        write_stdout("\x1b\x5c")
 
 
 def write_stdout(content):
