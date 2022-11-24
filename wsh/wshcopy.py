@@ -32,18 +32,29 @@ def cli():
         print("webssh-sh %s" % version)
         exit(0)
 
-    input_content = ""
+    input_content = read_stdin()
 
-    for line in sys.stdin:
-        if '\D' == line.rstrip():
-            break
-        input_content += line
-
-    input_content = input_content.rstrip()
+    if input_content == "":
+        exit(0)
 
     write_sequence_start()
     write_sequence(input_content)
     write_sequence_end()
+
+
+def read_stdin():
+    input_content = ""
+
+    try:
+        for line in sys.stdin:
+            if '\D' == line.rstrip():
+                break
+            input_content += line
+        input_content = input_content.rstrip()
+    except KeyboardInterrupt:
+        input_content = ""
+    
+    return input_content
 
 
 def write_sequence(input_content):
