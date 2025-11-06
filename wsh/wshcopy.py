@@ -41,7 +41,7 @@ def read_stdin():
     input_content = ""
     try:
         for line in sys.stdin:
-            if '\D' == line.rstrip():
+            if r'\D' == line.rstrip():
                 break
             input_content += line
         input_content = input_content.rstrip()
